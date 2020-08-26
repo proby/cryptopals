@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use super::hex;
+
 const ENGLISH_HISTOGRAM: [(u8, f32); 25] = [
     (b' ', 0.14),
     (b'e', 0.12),
@@ -93,7 +95,7 @@ fn xor_decrypt_and_score(hex_str_as_bytes: Vec<u8>, byte_to_test: u8) -> (f32, V
 }
 
 pub fn singe_byte_xor_decrypt(hex_str: &str) -> (char, String) {
-    let hex_str_as_bytes: Vec<u8> = hex::decode(hex_str).expect("Failed to decode");
+    let hex_str_as_bytes: Vec<u8> = hex::decode(hex_str);
 
     let mut bests = (0, 0.0, vec![]);
     for byte_to_test in 0..255 {

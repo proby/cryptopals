@@ -1,5 +1,7 @@
+use super::hex;
+
 pub fn hex_str_to_base_64_str(hex_str: &str) -> String {
-    let str_to_encode = hex::decode(hex_str).expect("Failed to decode");
+    let str_to_encode = hex::decode(hex_str);
     base64::encode(str_to_encode)
 }
 

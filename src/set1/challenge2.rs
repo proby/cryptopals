@@ -1,5 +1,7 @@
+use super::hex;
+
 fn hex_str_to_bytes_vec(hex_str: &str) -> Vec<u8> {
-    hex::decode(hex_str).expect("Failed to decode")
+    hex::decode(hex_str)
 }
 
 pub fn fixed_xor(hex_str_a: &str, hex_str_b: &str) -> String {
