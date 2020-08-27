@@ -1,22 +1,10 @@
-use super::hex;
-
-fn hex_str_to_bytes_vec(hex_str: &str) -> Vec<u8> {
-    hex::decode(hex_str)
-}
+use super::{hex, util};
 
 pub fn fixed_xor(hex_str_a: &str, hex_str_b: &str) -> String {
-    assert!(hex_str_a.len() == hex_str_b.len());
+    let bytes_a = hex::decode(hex_str_a);
+    let bytes_b = hex::decode(hex_str_b);
 
-    let bytes_a = hex_str_to_bytes_vec(hex_str_a);
-    let bytes_b = hex_str_to_bytes_vec(hex_str_b);
-
-    let xored_bytes = bytes_a.iter().zip(bytes_b.iter()).fold(
-        Vec::with_capacity(hex_str_a.len()),
-        |mut acc, (a, b)| {
-            acc.push(a ^ b);
-            acc
-        },
-    );
+    let xored_bytes = util::xor_byte_vecs(bytes_a, bytes_b);
 
     hex::encode(xored_bytes)
 }
