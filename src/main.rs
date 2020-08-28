@@ -2,6 +2,10 @@ mod set1;
 mod utils;
 
 fn main() {
+    let input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+    let result = set1::challenge5::repeating_key_xor(input, "ICE");
+    println!("CHALLENGE 5: {}", result);
+
     let (best, _best_string) = set1::challenge4::detect_single_character_xor();
     println!("CHALLENGE 4: {}", best.print_info());
 
