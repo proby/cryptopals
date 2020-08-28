@@ -1,7 +1,7 @@
 use super::super::utils::{single_byte_xor, util, xor_score};
 
 pub fn detect_single_character_xor() -> (xor_score::XorScore, String) {
-    let hex_strings: Vec<String> = util::filename_to_str_vec("src/set1/4.txt");
+    let hex_strings: Vec<String> = util::filename_to_str_vec("src/set1/data/4.txt");
 
     let mut best = xor_score::XorScore::default();
     let mut best_input_string = String::from("");
