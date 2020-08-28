@@ -2,6 +2,8 @@ mod set1;
 mod utils;
 
 fn main() {
+    set1::challenge6::break_repeating_key_xor();
+
     let input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
     let result = set1::challenge5::repeating_key_xor(input, "ICE");
     println!("CHALLENGE 5: {}", result);

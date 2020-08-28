@@ -1,3 +1,4 @@
+pub mod hamming;
 pub mod hex;
 pub mod scorer;
 pub mod single_byte_xor;
