@@ -1,4 +1,5 @@
 mod set1;
+mod utils;
 
 fn main() {
     let (best, _best_string) = set1::challenge4::detect_single_character_xor();

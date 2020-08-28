@@ -1,4 +1,4 @@
-use super::hex;
+use super::super::utils::hex;
 
 pub fn hex_str_to_base_64_str(hex_str: &str) -> String {
     let str_to_encode = hex::decode(hex_str);

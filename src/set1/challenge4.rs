@@ -1,9 +1,9 @@
-use super::{scorer, single_byte_xor, util};
+use super::super::utils::{single_byte_xor, util, xor_score};
 
-pub fn detect_single_character_xor() -> (scorer::XorScore, String) {
+pub fn detect_single_character_xor() -> (xor_score::XorScore, String) {
     let hex_strings: Vec<String> = util::filename_to_str_vec("src/set1/4.txt");
 
-    let mut best = scorer::XorScore::default();
+    let mut best = xor_score::XorScore::default();
     let mut best_input_string = String::from("");
     for str in hex_strings {
         let this_best = single_byte_xor::decrypt(&str);

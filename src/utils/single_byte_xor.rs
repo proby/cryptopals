@@ -1,4 +1,4 @@
-use super::{hex, scorer, util};
+use super::{hex, scorer, util, xor_score};
 
 fn xor_decrypt_and_score(hex_str_as_bytes: Vec<u8>, byte_to_test: u8) -> (f32, Vec<u8>) {
     let other_vec: Vec<u8> = vec![byte_to_test; hex_str_as_bytes.len()];
@@ -9,10 +9,10 @@ fn xor_decrypt_and_score(hex_str_as_bytes: Vec<u8>, byte_to_test: u8) -> (f32, V
     (score, xored_bytes)
 }
 
-pub fn decrypt(hex_str: &str) -> scorer::XorScore {
+pub fn decrypt(hex_str: &str) -> xor_score::XorScore {
     let hex_str_as_bytes: Vec<u8> = hex::decode(hex_str);
 
-    let mut best = scorer::XorScore::default();
+    let mut best = xor_score::XorScore::default();
     for byte_to_test in 0..255 {
         let (score, xored_bytes) = xor_decrypt_and_score(hex_str_as_bytes.clone(), byte_to_test);
 
