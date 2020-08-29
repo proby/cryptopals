@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::fs;
 
-pub fn xor_byte_vecs(bytes_a: Vec<u8>, bytes_b: Vec<u8>) -> Vec<u8> {
+pub fn xor_byte_vecs(bytes_a: &[u8], bytes_b: &[u8]) -> Vec<u8> {
     match bytes_a.len().cmp(&bytes_b.len()) {
         Ordering::Equal => xor_byte_vecs_even(bytes_a, bytes_b),
         Ordering::Greater => xor_byte_vecs_uneven(bytes_a, bytes_b),
@@ -9,9 +9,7 @@ pub fn xor_byte_vecs(bytes_a: Vec<u8>, bytes_b: Vec<u8>) -> Vec<u8> {
     }
 }
 
-fn xor_byte_vecs_even(bytes_a: Vec<u8>, bytes_b: Vec<u8>) -> Vec<u8> {
-    assert!(bytes_a.len() == bytes_b.len());
-
+fn xor_byte_vecs_even(bytes_a: &[u8], bytes_b: &[u8]) -> Vec<u8> {
     bytes_a
         .iter()
         .zip(bytes_b.iter())
@@ -21,10 +19,8 @@ fn xor_byte_vecs_even(bytes_a: Vec<u8>, bytes_b: Vec<u8>) -> Vec<u8> {
         })
 }
 
-fn xor_byte_vecs_uneven(bytes_a: Vec<u8>, bytes_b: Vec<u8>) -> Vec<u8> {
-    // bytes_a cannot be shorter
+fn xor_byte_vecs_uneven(bytes_a: &[u8], bytes_b: &[u8]) -> Vec<u8> {
     let bytes_b_len = bytes_b.len();
-    assert!(bytes_a.len() >= bytes_b_len);
 
     bytes_a.iter().enumerate().fold(
         Vec::with_capacity(bytes_a.len()),

@@ -6,10 +6,10 @@ pub fn decrypt(hex_str: &str) -> xor_score::XorScore {
     let mut best = xor_score::XorScore::default();
     for byte_to_test in 0..255 {
         let other_vec: Vec<u8> = vec![byte_to_test; hex_str_as_bytes.len()];
-        let xored_bytes = util::xor_byte_vecs(hex_str_as_bytes.clone(), other_vec);
+        let xored_bytes = util::xor_byte_vecs(&hex_str_as_bytes, &other_vec);
 
-        if let Ok(utf_str) = String::from_utf8(xored_bytes.clone()) {
-            let score = scorer::score_for(xored_bytes.clone());
+        if let Ok(utf_str) = String::from_utf8(xored_bytes.to_owned()) {
+            let score = scorer::score_for(&xored_bytes);
             if score > best.score {
                 best.decoding_byte = byte_to_test;
                 best.score = score;

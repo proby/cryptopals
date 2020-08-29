@@ -1,12 +1,12 @@
 use super::super::utils::{hex, util};
 
 pub fn repeating_key_xor(input_str: &str, key: &str) -> String {
-    let input_byte_vec = input_str.as_bytes().to_vec();
-    let key_vec = key.as_bytes().to_vec();
+    let input_byte_vec = input_str.as_bytes();
+    let key_vec = key.as_bytes();
 
-    let xored_bytes = util::xor_byte_vecs(input_byte_vec, key_vec);
+    let xored_bytes = util::xor_byte_vecs(&input_byte_vec, &key_vec);
 
-    hex::encode(xored_bytes)
+    hex::encode(&xored_bytes)
 }
 
 #[cfg(test)]

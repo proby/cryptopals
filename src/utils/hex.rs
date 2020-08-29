@@ -1,4 +1,4 @@
-pub fn encode(bytes: Vec<u8>) -> String {
+pub fn encode(bytes: &[u8]) -> String {
     let capacity = bytes.len() * 2;
 
     bytes.iter().enumerate().fold(
@@ -63,10 +63,10 @@ mod tests {
 
     #[test]
     fn round_trips() {
-        let the_string = String::from("deadbeef");
-        assert_eq!(encode(decode(&the_string)), the_string);
+        let the_string = "deadbeef";
+        assert_eq!(encode(&decode(the_string)), the_string);
 
-        let the_string = String::from("deadbeef01234567ABCDEF");
-        assert_eq!(encode(decode(&the_string)), the_string.to_lowercase());
+        let the_string = "deadbeef01234567ABCDEF";
+        assert_eq!(encode(&decode(the_string)), the_string.to_lowercase());
     }
 }

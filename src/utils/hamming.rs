@@ -17,11 +17,11 @@ fn ones_count(num: u8) -> u32 {
 // The Hamming distance is just the number of differing bits.
 pub fn calc_distance(str_a: &str, str_b: &str) -> u32 {
     // convert to bytes
-    let bytes_a = str_a.as_bytes().to_vec();
-    let bytes_b = str_b.as_bytes().to_vec();
+    let bytes_a = str_a.as_bytes();
+    let bytes_b = str_b.as_bytes();
 
     // xor 'em
-    let xored_bytes = util::xor_byte_vecs(bytes_a, bytes_b);
+    let xored_bytes = util::xor_byte_vecs(&bytes_a, &bytes_b);
 
     // count number of bits in result
     xored_bytes.iter().fold(0, |mut acc, byte| {

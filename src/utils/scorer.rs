@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub fn score_for(xored_bytes: Vec<u8>) -> f32 {
+pub fn score_for(xored_bytes: &[u8]) -> f32 {
     let xored_bytes_len: f32 = xored_bytes.len() as f32;
     let mut histogram: HashMap<u8, f32> = HashMap::new();
 
@@ -18,7 +18,7 @@ pub fn score_for(xored_bytes: Vec<u8>) -> f32 {
         *val /= xored_bytes_len;
     }
 
-    let mut score = 1.0 / chi_squared(histogram.clone());
+    let mut score = 1.0 / chi_squared(&histogram);
     if *histogram.get(&b'?').unwrap_or(&0.0) < 0.05 {
         score *= 2.0
     }
@@ -53,7 +53,7 @@ const ENGLISH_HISTOGRAM: [(u8, f32); 25] = [
     (b'?', 0.09), // the "other" bucket
 ];
 
-fn chi_squared(histo_b: HashMap<u8, f32>) -> f32 {
+fn chi_squared(histo_b: &HashMap<u8, f32>) -> f32 {
     ENGLISH_HISTOGRAM.iter().fold(0.0, |score, (key, val_eng)| {
         let val_b = histo_b.get(key).unwrap_or(&0.0);
 
