@@ -1,8 +1,12 @@
 use super::{hex, scorer, util, xor_score};
 
-pub fn decrypt(hex_str: &str) -> xor_score::XorScore {
+pub fn decrypt_from_str(hex_str: &str) -> xor_score::XorScore {
     let hex_str_as_bytes: Vec<u8> = hex::decode(hex_str);
 
+    decrypt(hex_str_as_bytes)
+}
+
+pub fn decrypt(hex_str_as_bytes: Vec<u8>) -> xor_score::XorScore {
     let mut best = xor_score::XorScore::default();
     for byte_to_test in 0..255 {
         let other_vec: Vec<u8> = vec![byte_to_test; hex_str_as_bytes.len()];

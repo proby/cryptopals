@@ -15,11 +15,7 @@ fn ones_count(num: u8) -> u32 {
 }
 
 // The Hamming distance is just the number of differing bits.
-pub fn calc_distance(str_a: &str, str_b: &str) -> u32 {
-    // convert to bytes
-    let bytes_a = str_a.as_bytes();
-    let bytes_b = str_b.as_bytes();
-
+pub fn calc_distance(bytes_a: &[u8], bytes_b: &[u8]) -> u32 {
     // xor 'em
     let xored_bytes = util::xor_byte_vecs(&bytes_a, &bytes_b);
 
@@ -54,6 +50,9 @@ mod tests {
 
     #[test]
     fn the_examle() {
-        assert_eq!(calc_distance("this is a test", "wokka wokka!!!"), 37);
+        assert_eq!(
+            calc_distance("this is a test".as_bytes(), "wokka wokka!!!".as_bytes()),
+            37
+        );
     }
 }

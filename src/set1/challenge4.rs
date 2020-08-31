@@ -6,7 +6,7 @@ pub fn detect_single_character_xor() -> (xor_score::XorScore, String) {
     let mut best = xor_score::XorScore::default();
     let mut best_input_string = String::from("");
     for str in hex_strings {
-        let this_best = single_byte_xor::decrypt(&str);
+        let this_best = single_byte_xor::decrypt_from_str(&str);
 
         if this_best.score > best.score {
             best = this_best;
