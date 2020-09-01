@@ -1,32 +1,34 @@
-use super::super::utils::hamming;
-use crate::utils::{self, hex, single_byte_xor};
+use super::super::utils::{hamming, scorer, single_byte_xor, util};
 use std::fs;
 
-fn key_sizes_to_test(contents: &[u8]) -> Vec<usize> {
-    let num_of_keys_to_test = 5;
-
+fn find_key_sizes_to_test(contents: &[u8], num_of_keys_to_test: usize) -> Vec<usize> {
     let mut key_sizes: Vec<(usize, f32)> = vec![];
     for key_size in 2..=40 {
-        let first_keysize_block = contents.get(0..key_size).unwrap();
-        let second_keysize_block = contents.get(key_size..(2 * key_size)).unwrap();
-        let third_keysize_block = contents.get((2 * key_size)..(3 * key_size)).unwrap();
-        let fourth_keysize_block = contents.get((3 * key_size)..(4 * key_size)).unwrap();
+        let first_keysize_block = contents
+            .get(0..key_size)
+            .expect("Failed to fetch first block");
+        let second_keysize_block = contents
+            .get(key_size..(2 * key_size))
+            .expect("Failed to fetch second block");
+        let third_keysize_block = contents
+            .get((2 * key_size)..(3 * key_size))
+            .expect("Failed to fetch third block");
+        let fourth_keysize_block = contents
+            .get((3 * key_size)..(4 * key_size))
+            .expect("Failed to fetch fourth block");
 
-        let first_dist = (hamming::calc_distance(first_keysize_block, second_keysize_block) as f32)
-            / (key_size as f32);
-        let second_dist = (hamming::calc_distance(second_keysize_block, third_keysize_block)
-            as f32)
-            / (key_size as f32);
-        let third_dist = (hamming::calc_distance(third_keysize_block, fourth_keysize_block) as f32)
-            / (key_size as f32);
+        let first_dist = hamming::calc_distance(first_keysize_block, second_keysize_block);
+        let second_dist = hamming::calc_distance(second_keysize_block, third_keysize_block);
+        let third_dist = hamming::calc_distance(third_keysize_block, fourth_keysize_block);
 
-        let mean_distance = (first_dist + second_dist + third_dist) / 3.0;
+        let sum_of_distances = (first_dist + second_dist + third_dist) as f32;
+        let mean_distance = sum_of_distances / (3.0 * key_size as f32);
 
         key_sizes.push((key_size, mean_distance));
     }
 
     key_sizes.sort_unstable_by(|(_a_key, a_score), (_b_key, b_score)| {
-        a_score.partial_cmp(b_score).unwrap()
+        a_score.partial_cmp(b_score).expect("unable to compare")
     });
 
     key_sizes[0..num_of_keys_to_test]
@@ -35,15 +37,8 @@ fn key_sizes_to_test(contents: &[u8]) -> Vec<usize> {
         .collect::<Vec<usize>>()
 }
 
-pub fn break_repeating_key_xor() -> (String, String) {
-    let contents =
-        fs::read_to_string("src/set1/data/6.txt").expect("Something went wrong reading the file");
-    let contents = contents.replace("\n", "");
-    let contents = base64::decode(contents).expect("Can't decode base64");
-
-    let key_sizes_to_test = key_sizes_to_test(&contents);
-
-    let possible_keys: Vec<String> = key_sizes_to_test
+fn find_possible_keys(contents: &[u8], key_sizes_to_test: &[usize]) -> Vec<String> {
+    key_sizes_to_test
         .iter()
         .map(|test_key_size| {
             let mut transposed: Vec<Vec<u8>> = vec![vec![]; *test_key_size];
@@ -60,19 +55,37 @@ pub fn break_repeating_key_xor() -> (String, String) {
                     acc
                 })
         })
-        .collect();
+        .collect::<Vec<String>>()
+}
 
+fn load_file_contents() -> Vec<u8> {
+    let contents =
+        fs::read_to_string("src/set1/data/6.txt").expect("Something went wrong reading the file");
+    let contents = contents.replace("\n", "");
+    base64::decode(contents).expect("Can't decode base64")
+}
+
+pub fn break_repeating_key_xor() -> (String, String) {
+    let contents = load_file_contents();
+
+    let key_sizes_to_test = find_key_sizes_to_test(&contents, 5);
+    let possible_keys: Vec<String> = find_possible_keys(&contents, &key_sizes_to_test);
+
+    find_best_score(&contents, &possible_keys)
+}
+
+fn find_best_score(contents: &[u8], possible_keys: &[String]) -> (String, String) {
     let mut best_score = 0.0;
     let mut best_key = String::new();
     let mut best_str = String::new();
     for possible_key in possible_keys {
-        let possible_key_bytes = hex::decode(&hex::encode(possible_key.as_bytes()));
-        let xored = utils::util::xor_byte_vecs(&possible_key_bytes, &contents);
-        let score = utils::scorer::score_for(&xored);
+        let possible_key_bytes = possible_key.as_bytes();
+        let xored = util::xor_byte_vecs(&possible_key_bytes, &contents);
+        let score = scorer::score_for(&xored);
 
         if score > best_score {
             best_score = score;
-            best_key = possible_key;
+            best_key = possible_key.to_owned();
             best_str = String::from_utf8(xored).unwrap();
         }
     }
