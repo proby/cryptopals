@@ -1,19 +1,8 @@
-use super::super::utils::hex;
+use super::super::utils::{file_helpers, hex};
 use std::collections::HashSet;
-use std::fs;
-
-fn load_file_contents() -> Vec<String> {
-    let contents =
-        fs::read_to_string("src/set1/data/8.txt").expect("Something went wrong reading the file");
-    let contents = contents.trim().to_string();
-    contents
-        .split('\n')
-        .map(|x| String::from(x.trim()))
-        .collect()
-}
 
 pub fn detect_aes_in_ecb_mode() -> String {
-    let hex_strings = load_file_contents();
+    let hex_strings = file_helpers::filename_to_str_vec("src/set1/data/8.txt");
     let mut detected = String::from("none found");
 
     for hex_string in hex_strings {

@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::fs;
 
 pub fn xor_byte_vecs(bytes_a: &[u8], bytes_b: &[u8]) -> Vec<u8> {
     match bytes_a.len().cmp(&bytes_b.len()) {
@@ -30,17 +29,4 @@ fn xor_byte_vecs_uneven(bytes_a: &[u8], bytes_b: &[u8]) -> Vec<u8> {
             acc
         },
     )
-}
-
-fn read_in_and_trim(filename: &str) -> String {
-    let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
-    contents.trim().to_string()
-}
-
-pub fn filename_to_str_vec(filename: &str) -> Vec<String> {
-    let trimmed = read_in_and_trim(filename);
-    trimmed
-        .split('\n')
-        .map(|x| String::from(x.trim()))
-        .collect()
 }

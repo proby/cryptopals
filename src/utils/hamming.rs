@@ -1,4 +1,13 @@
-use super::util;
+use super::xor_util;
+
+pub fn calc_distance(bytes_a: &[u8], bytes_b: &[u8]) -> u32 {
+    let xored_bytes = xor_util::xor_byte_vecs(&bytes_a, &bytes_b);
+
+    xored_bytes.iter().fold(0, |mut sum, byte| {
+        sum += ones_count(*byte);
+        sum
+    })
+}
 
 fn ones_count(num: u8) -> u32 {
     let mut mut_num = num;
@@ -12,18 +21,6 @@ fn ones_count(num: u8) -> u32 {
     }
 
     count
-}
-
-// The Hamming distance is just the number of differing bits.
-pub fn calc_distance(bytes_a: &[u8], bytes_b: &[u8]) -> u32 {
-    // xor 'em
-    let xored_bytes = util::xor_byte_vecs(&bytes_a, &bytes_b);
-
-    // count number of bits in result
-    xored_bytes.iter().fold(0, |mut acc, byte| {
-        acc += ones_count(*byte);
-        acc
-    })
 }
 
 #[cfg(test)]

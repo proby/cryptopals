@@ -1,10 +1,10 @@
-use super::super::utils::{hex, util};
+use super::super::utils::{hex, xor_util};
 
 pub fn fixed_xor(hex_str_a: &str, hex_str_b: &str) -> String {
     let bytes_a = hex::decode(hex_str_a);
     let bytes_b = hex::decode(hex_str_b);
 
-    let xored_bytes = util::xor_byte_vecs(&bytes_a, &bytes_b);
+    let xored_bytes = xor_util::xor_byte_vecs(&bytes_a, &bytes_b);
 
     hex::encode(&xored_bytes)
 }

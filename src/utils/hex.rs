@@ -1,15 +1,14 @@
 pub fn encode(bytes: &[u8]) -> String {
     let capacity = bytes.len() * 2;
 
-    bytes.iter().enumerate().fold(
-        String::with_capacity(capacity),
-        |mut acc, (_index, byte)| {
+    bytes
+        .iter()
+        .fold(String::with_capacity(capacity), |mut acc, byte| {
             let (upper, lower) = byte_to_hexes(*byte);
             acc.push(upper);
             acc.push(lower);
             acc
-        },
-    )
+        })
 }
 
 pub fn decode(hex_str: &str) -> Vec<u8> {

@@ -1,5 +1,13 @@
-use super::super::utils::{hamming, scorer, single_byte_xor, util};
-use std::fs;
+use super::super::utils::{file_helpers, hamming, scorer, single_byte_xor, xor_util};
+
+pub fn break_repeating_key_xor() -> (String, String) {
+    let contents = file_helpers::filename_to_bytes_vec("src/set1/data/6.txt");
+
+    let key_sizes_to_test = find_key_sizes_to_test(&contents, 5);
+    let possible_keys: Vec<String> = find_possible_keys(&contents, &key_sizes_to_test);
+
+    find_best_score(&contents, &possible_keys)
+}
 
 fn find_key_sizes_to_test(contents: &[u8], num_of_keys_to_test: usize) -> Vec<usize> {
     let mut key_sizes: Vec<(usize, f32)> = vec![];
@@ -58,29 +66,13 @@ fn find_possible_keys(contents: &[u8], key_sizes_to_test: &[usize]) -> Vec<Strin
         .collect::<Vec<String>>()
 }
 
-fn load_file_contents() -> Vec<u8> {
-    let contents =
-        fs::read_to_string("src/set1/data/6.txt").expect("Something went wrong reading the file");
-    let contents = contents.replace("\n", "");
-    base64::decode(contents).expect("Can't decode base64")
-}
-
-pub fn break_repeating_key_xor() -> (String, String) {
-    let contents = load_file_contents();
-
-    let key_sizes_to_test = find_key_sizes_to_test(&contents, 5);
-    let possible_keys: Vec<String> = find_possible_keys(&contents, &key_sizes_to_test);
-
-    find_best_score(&contents, &possible_keys)
-}
-
 fn find_best_score(contents: &[u8], possible_keys: &[String]) -> (String, String) {
     let mut best_score = 0.0;
     let mut best_key = String::new();
     let mut best_str = String::new();
     for possible_key in possible_keys {
         let possible_key_bytes = possible_key.as_bytes();
-        let xored = util::xor_byte_vecs(&possible_key_bytes, &contents);
+        let xored = xor_util::xor_byte_vecs(&possible_key_bytes, &contents);
         let score = scorer::score_for(&xored);
 
         if score > best_score {

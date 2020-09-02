@@ -24,13 +24,13 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool) {
             results_to_print = best.print_info();
         }
         4 => {
-            let (best, _best_string) = set1::challenge4::detect_single_character_xor();
+            let best = set1::challenge4::detect_single_character_xor();
             results_to_print = best.print_info();
         }
         5 => {
             let input =
-                "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
-            results_to_print = set1::challenge5::repeating_key_xor(input, "ICE");
+                b"Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+            results_to_print = set1::challenge5::repeating_key_xor(input, b"ICE");
         }
         6 => {
             let (key, message) = set1::challenge6::break_repeating_key_xor();

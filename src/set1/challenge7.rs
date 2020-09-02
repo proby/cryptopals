@@ -1,16 +1,9 @@
+use super::super::utils::file_helpers;
 use openssl::symm::{decrypt, Cipher};
-use std::fs;
-
-fn load_file_contents() -> Vec<u8> {
-    let contents =
-        fs::read_to_string("src/set1/data/7.txt").expect("Something went wrong reading the file");
-    let contents = contents.replace("\n", "");
-    base64::decode(contents).expect("Can't decode base64")
-}
 
 pub fn aes_in_ecb_mode() -> String {
-    let known_key = "YELLOW SUBMARINE".as_bytes();
-    let contents = load_file_contents();
+    let known_key = b"YELLOW SUBMARINE";
+    let contents = file_helpers::filename_to_bytes_vec("src/set1/data/7.txt");
 
     let cipher = Cipher::aes_128_ecb();
 
