@@ -44,8 +44,12 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool) {
             let message = set1::challenge7::aes_in_ecb_mode();
             results_to_print = message[0..=32].to_string();
         }
+        8 => {
+            results_to_print = set1::challenge8::detect_aes_in_ecb_mode();
+        }
         _ => panic!("challenge number {} is not implemented", challenge_num),
     }
+
     if with_timing_info {
         let after = instant.elapsed();
         println!(
@@ -59,7 +63,7 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool) {
 
 fn main() {
     let show_timings = true;
-    for challenge_num in 1..=7 {
+    for challenge_num in 1..=8 {
         run_challenge(challenge_num, show_timings);
     }
 }
