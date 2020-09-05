@@ -47,9 +47,6 @@ mod tests {
 
     #[test]
     fn the_examle() {
-        assert_eq!(
-            calc_distance("this is a test".as_bytes(), "wokka wokka!!!".as_bytes()),
-            37
-        );
+        assert_eq!(calc_distance(b"this is a test", b"wokka wokka!!!"), 37);
     }
 }

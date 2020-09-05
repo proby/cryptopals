@@ -3,37 +3,49 @@ use super::super::utils::{file_helpers, hamming, scorer, single_byte_xor, xor_ut
 pub fn break_repeating_key_xor() -> (String, String) {
     let contents = file_helpers::filename_to_bytes_vec("src/set1/data/6.txt");
 
-    let key_sizes_to_test = find_key_sizes_to_test(&contents, 5);
+    let key_sizes_to_test = find_key_sizes_to_test(&contents);
     let possible_keys: Vec<String> = find_possible_keys(&contents, &key_sizes_to_test);
 
     find_best_score(&contents, &possible_keys)
 }
 
-fn find_key_sizes_to_test(contents: &[u8], num_of_keys_to_test: usize) -> Vec<usize> {
-    let mut key_sizes: Vec<(usize, f32)> = vec![];
-    for key_size in 2..=40 {
-        let first_keysize_block = contents
-            .get(0..key_size)
-            .expect("Failed to fetch first block");
-        let second_keysize_block = contents
-            .get(key_size..(2 * key_size))
-            .expect("Failed to fetch second block");
-        let third_keysize_block = contents
-            .get((2 * key_size)..(3 * key_size))
-            .expect("Failed to fetch third block");
-        let fourth_keysize_block = contents
-            .get((3 * key_size)..(4 * key_size))
-            .expect("Failed to fetch fourth block");
+fn calc_sum_of_distances(contents: &[u8], key_size: usize, num_of_blocks_to_assess: usize) -> f32 {
+    let mut prev_keysized_block: &[u8] = &[];
 
-        let first_dist = hamming::calc_distance(first_keysize_block, second_keysize_block);
-        let second_dist = hamming::calc_distance(second_keysize_block, third_keysize_block);
-        let third_dist = hamming::calc_distance(third_keysize_block, fourth_keysize_block);
+    (0..num_of_blocks_to_assess)
+        .enumerate()
+        .fold(0.0, |mut acc, (index, block_num)| {
+            let start_index = key_size * block_num;
+            let end_index = key_size * (block_num + 1);
+            let keysized_block = contents
+                .get(start_index..end_index)
+                .expect("Failed to fetch first block");
+            if index > 0 {
+                let dist = hamming::calc_distance(prev_keysized_block, keysized_block) as f32;
+                acc += dist;
+            }
+            prev_keysized_block = keysized_block;
 
-        let sum_of_distances = (first_dist + second_dist + third_dist) as f32;
-        let mean_distance = sum_of_distances / (3.0 * key_size as f32);
+            acc
+        })
+}
 
-        key_sizes.push((key_size, mean_distance));
-    }
+fn calc_mean_distance(contents: &[u8], key_size: usize) -> f32 {
+    let num_of_blocks_to_assess = 4;
+    let distances_count = num_of_blocks_to_assess - 1;
+
+    calc_sum_of_distances(&contents, key_size, num_of_blocks_to_assess)
+        / ((distances_count * key_size) as f32)
+}
+
+fn find_key_sizes_to_test(contents: &[u8]) -> Vec<usize> {
+    let key_range_start = 2;
+    let key_range_end = 40;
+    let num_of_keys_to_test = 5;
+
+    let mut key_sizes: Vec<(usize, f32)> = (key_range_start..=key_range_end)
+        .map(|key_size| (key_size, calc_mean_distance(&contents, key_size)))
+        .collect();
 
     key_sizes.sort_unstable_by(|(_a_key, a_score), (_b_key, b_score)| {
         a_score.partial_cmp(b_score).expect("unable to compare")
@@ -48,8 +60,9 @@ fn find_key_sizes_to_test(contents: &[u8], num_of_keys_to_test: usize) -> Vec<us
 fn find_possible_keys(contents: &[u8], key_sizes_to_test: &[usize]) -> Vec<String> {
     key_sizes_to_test
         .iter()
-        .map(|test_key_size| {
-            let mut transposed: Vec<Vec<u8>> = vec![vec![]; *test_key_size];
+        .map(|&test_key_size| {
+            let inner_size = (contents.len() as f32 / test_key_size as f32).ceil() as usize;
+            let mut transposed: Vec<Vec<u8>> = vec![Vec::with_capacity(inner_size); test_key_size];
             for (index, byte) in contents.iter().enumerate() {
                 let inner_vec = transposed.get_mut(index % test_key_size).expect("NOPE");
                 inner_vec.push(*byte);
@@ -57,8 +70,8 @@ fn find_possible_keys(contents: &[u8], key_sizes_to_test: &[usize]) -> Vec<Strin
 
             transposed
                 .iter()
-                .fold(String::with_capacity(*test_key_size), |mut acc, block| {
-                    let this_best = single_byte_xor::decrypt(block.to_vec());
+                .fold(String::with_capacity(test_key_size), |mut acc, block| {
+                    let this_best = single_byte_xor::decrypt(block);
                     acc.push(this_best.decoding_char());
                     acc
                 })
@@ -70,6 +83,7 @@ fn find_best_score(contents: &[u8], possible_keys: &[String]) -> (String, String
     let mut best_score = 0.0;
     let mut best_key = String::new();
     let mut best_str = String::new();
+
     for possible_key in possible_keys {
         let possible_key_bytes = possible_key.as_bytes();
         let xored = xor_util::xor_byte_vecs(&possible_key_bytes, &contents);
