@@ -5,13 +5,11 @@ pub fn detect_single_character_xor(duration: &mut Duration) -> xor_score::XorSco
     let hex_strings: Vec<String> = file_helpers::filename_to_str_vec("src/set1/data/4.txt");
 
     let mut best = xor_score::XorScore::default();
-    // let mut best_input_string = String::from("");
     for str in hex_strings {
         let this_best = single_byte_xor::decrypt_from_str(&str, duration);
 
         if this_best.score > best.score {
             best = this_best;
-            // best_input_string = str;
         }
     }
 
@@ -30,9 +28,5 @@ mod tests {
             best.decoded_string,
             String::from("Now that the party is jumping")
         );
-        // assert_eq!(
-        //     best_input_string,
-        //     String::from("7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f")
-        // );
     }
 }

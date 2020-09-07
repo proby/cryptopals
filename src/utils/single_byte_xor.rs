@@ -32,3 +32,19 @@ pub fn decrypt(hex_str_as_bytes: &[u8], duration: &mut Duration) -> xor_score::X
 
     best
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn from_ruby() {
+        let score = decrypt(
+            &[28, 30, 10, 3, 78, 79, 27, 100, 72, 15, 18, 10, 79, 0, 113],
+            &mut Duration::new(0, 0),
+        );
+        assert_eq!(score.score, 0.33570558);
+        assert_eq!(score.decoding_char(), ' ');
+        assert_eq!(score.decoded_string, String::from("<>*#no;Dh/2*o Q"));
+    }
+}
