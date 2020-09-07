@@ -1,3 +1,4 @@
+pub mod displayable_bytes;
 pub mod file_helpers;
 pub mod hamming;
 pub mod hex;

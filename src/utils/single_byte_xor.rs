@@ -1,12 +1,13 @@
 use super::{hex, scorer, xor_score, xor_util};
+use std::time::Duration;
 
-pub fn decrypt_from_str(hex_str: &str) -> xor_score::XorScore {
+pub fn decrypt_from_str(hex_str: &str, duration: &mut Duration) -> xor_score::XorScore {
     let hex_str_as_bytes: Vec<u8> = hex::decode(hex_str);
 
-    decrypt(&hex_str_as_bytes)
+    decrypt(&hex_str_as_bytes, duration)
 }
 
-pub fn decrypt(hex_str_as_bytes: &[u8]) -> xor_score::XorScore {
+pub fn decrypt(hex_str_as_bytes: &[u8], duration: &mut Duration) -> xor_score::XorScore {
     let mut best = xor_score::XorScore::default();
     let mut other_vec: Vec<u8>;
     let mut xored_bytes: Vec<u8>;
@@ -16,7 +17,7 @@ pub fn decrypt(hex_str_as_bytes: &[u8]) -> xor_score::XorScore {
         xored_bytes = xor_util::xor_byte_vecs(hex_str_as_bytes, &other_vec);
 
         if let Ok(utf_str) = String::from_utf8(xored_bytes.to_owned()) {
-            let score = scorer::score_for(&xored_bytes);
+            let score = scorer::score_for(&xored_bytes, duration);
 
             if score > best.score {
                 best = xor_score::XorScore {
