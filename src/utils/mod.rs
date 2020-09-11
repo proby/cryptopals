@@ -2,6 +2,7 @@ pub mod displayable_bytes;
 pub mod file_helpers;
 pub mod hamming;
 pub mod hex;
+pub mod pkcs_padding;
 pub mod scorer;
 pub mod single_byte_xor;
 pub mod xor_score;
