@@ -6,6 +6,8 @@ mod utils;
 
 use std::time::{Duration, Instant};
 
+use utils::file_helpers;
+
 fn run_challenge(
     challenge_num: usize,
     with_timing_info: bool,
@@ -33,7 +35,9 @@ fn run_challenge(
             results_to_print = best.print_info();
         }
         4 => {
-            let best = set1::challenge4::detect_single_character_xor(scrorer_duration);
+            let hex_strings: Vec<String> = file_helpers::filename_to_str_vec("src/set1/data/4.txt");
+
+            let best = set1::challenge4::detect_single_character_xor(hex_strings, scrorer_duration);
             results_to_print = best.print_info();
         }
         5 => {
@@ -42,7 +46,9 @@ fn run_challenge(
             results_to_print = set1::challenge5::repeating_key_xor(input, b"ICE");
         }
         6 => {
-            let (key, message) = set1::challenge6::break_repeating_key_xor(scrorer_duration);
+            let contents = file_helpers::filename_to_bytes_vec("src/set1/data/6.txt");
+            let (key, message) =
+                set1::challenge6::break_repeating_key_xor(&contents, scrorer_duration);
             results_to_print = format!(
                 "CHALLENGE 6: key: \"{}\", decrypted len: {}",
                 key,
@@ -50,11 +56,14 @@ fn run_challenge(
             );
         }
         7 => {
-            let message = set1::challenge7::aes_in_ecb_mode();
+            let contents = file_helpers::filename_to_bytes_vec("src/set1/data/7.txt");
+            let key = b"YELLOW SUBMARINE";
+            let message = set1::challenge7::aec_ecb_decrypt(&contents, key);
             results_to_print = message[0..=32].to_string();
         }
         8 => {
-            results_to_print = set1::challenge8::detect_aes_in_ecb_mode();
+            let hex_strings = file_helpers::filename_to_str_vec("src/set1/data/8.txt");
+            results_to_print = set1::challenge8::detect_aes_in_ecb_mode(hex_strings);
         }
         _ => panic!("challenge number {} is not implemented", challenge_num),
     }
@@ -86,6 +95,7 @@ fn duration_percent_formatter(
 fn main() {
     let mut total_duration = Duration::new(0, 0);
     let mut scrorer_duration = Duration::new(0, 0);
+
     let show_timings = true;
     for challenge_num in 1..=8 {
         run_challenge(
