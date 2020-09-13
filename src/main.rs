@@ -2,6 +2,7 @@
 extern crate lazy_static;
 
 mod set1;
+mod set2;
 mod utils;
 
 use std::time::{Duration, Instant};
@@ -58,6 +59,11 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
             let hex_strings = file_helpers::filename_to_str_vec("src/set1/data/8.txt");
             results_to_print = set1::challenge8::detect_aes_in_ecb_mode(hex_strings);
         }
+        9 => {
+            let res = set2::run_challenge_9();
+            let str = String::from_utf8(res).unwrap();
+            results_to_print = format!("{:?}", str);
+        }
         _ => panic!("challenge number {} is not implemented", challenge_num),
     }
 
@@ -77,7 +83,7 @@ fn main() {
     let mut total_duration = Duration::new(0, 0);
 
     let show_timings = true;
-    for challenge_num in 1..=8 {
+    for challenge_num in 1..=9 {
         run_challenge(challenge_num, show_timings, &mut total_duration);
     }
 
