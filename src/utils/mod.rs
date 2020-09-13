@@ -1,3 +1,5 @@
+pub mod aes_cbc;
+pub mod aes_ecb;
 pub mod displayable_bytes;
 pub mod file_helpers;
 pub mod hamming;

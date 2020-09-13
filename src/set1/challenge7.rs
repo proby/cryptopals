@@ -1,9 +1,8 @@
-use openssl::symm::{decrypt, Cipher};
+use super::super::utils::aes_ecb;
 
 pub fn aec_ecb_decrypt(contents: &[u8], key: &[u8]) -> String {
-    let cipher = Cipher::aes_128_ecb();
+    let decrypted = aes_ecb::decrypt(contents, key);
 
-    let decrypted = decrypt(cipher, key, None, &contents).expect("oops");
     String::from_utf8(decrypted).expect("not a string")
 }
 

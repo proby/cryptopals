@@ -16,5 +16,5 @@ pub fn filename_to_bytes_vec(filename: &str) -> Vec<u8> {
 }
 
 fn read_in_filename(filename: &str) -> String {
-    fs::read_to_string(filename).expect("Something went wrong reading the file")
+    fs::read_to_string(filename).expect(&format!("Something went wrong reading {}", filename))
 }
