@@ -8,12 +8,7 @@ use std::time::{Duration, Instant};
 
 use utils::file_helpers;
 
-fn run_challenge(
-    challenge_num: usize,
-    with_timing_info: bool,
-    total_duration: &mut Duration,
-    scrorer_duration: &mut Duration,
-) {
+fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &mut Duration) {
     let instant = Instant::now();
     let results_to_print: String;
     match challenge_num {
@@ -30,14 +25,13 @@ fn run_challenge(
         3 => {
             let best = set1::challenge3::single_byte_xor_decrypt(
                 "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736",
-                scrorer_duration,
             );
             results_to_print = best.print_info();
         }
         4 => {
             let hex_strings: Vec<String> = file_helpers::filename_to_str_vec("src/set1/data/4.txt");
 
-            let best = set1::challenge4::detect_single_character_xor(hex_strings, scrorer_duration);
+            let best = set1::challenge4::detect_single_character_xor(hex_strings);
             results_to_print = best.print_info();
         }
         5 => {
@@ -47,8 +41,7 @@ fn run_challenge(
         }
         6 => {
             let contents = file_helpers::filename_to_bytes_vec("src/set1/data/6.txt");
-            let (key, message) =
-                set1::challenge6::break_repeating_key_xor(&contents, scrorer_duration);
+            let (key, message) = set1::challenge6::break_repeating_key_xor(&contents);
             results_to_print = format!(
                 "CHALLENGE 6: key: \"{}\", decrypted len: {}",
                 key,
@@ -80,36 +73,13 @@ fn run_challenge(
     }
 }
 
-fn duration_percent_formatter(
-    numerator: Duration,
-    denominator: Duration,
-    decimal_places: i32,
-) -> f64 {
-    let percent = numerator.as_nanos() as f64 / denominator.as_nanos() as f64;
-    let percent = (10.0f64).powi(2 + decimal_places) * percent;
-    let percent = percent.trunc();
-
-    percent / (10.0f64).powi(decimal_places)
-}
-
 fn main() {
     let mut total_duration = Duration::new(0, 0);
-    let mut scrorer_duration = Duration::new(0, 0);
 
     let show_timings = true;
     for challenge_num in 1..=8 {
-        run_challenge(
-            challenge_num,
-            show_timings,
-            &mut total_duration,
-            &mut scrorer_duration,
-        );
+        run_challenge(challenge_num, show_timings, &mut total_duration);
     }
 
-    println!();
-    println!("total duration: {:?}", total_duration);
-    println!("scorer duration: {:?}", scrorer_duration);
-
-    let percent = duration_percent_formatter(scrorer_duration, total_duration, 3);
-    println!("scorer percentage: {:?}%", percent);
+    println!("\ntotal duration: {:?}", total_duration);
 }
