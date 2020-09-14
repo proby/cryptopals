@@ -1,5 +1,5 @@
-use openssl::symm;
-use symm::{Crypter, Mode};
+use aes::block_cipher::{generic_array::GenericArray, BlockCipher, NewBlockCipher};
+use aes::Aes128;
 
 use super::pkcs_padding;
 
@@ -29,24 +29,23 @@ pub fn encrypt(contents: &[u8], key: &[u8]) -> Vec<u8> {
 }
 
 pub fn decrypt_single_block(contents: &[u8], key: &[u8]) -> Vec<u8> {
-    crypt_single_internal(contents, key, Mode::Decrypt)
+    let key = GenericArray::from_slice(key);
+    let cipher = Aes128::new(&key);
+
+    let mut block = GenericArray::clone_from_slice(contents);
+    cipher.decrypt_block(&mut block);
+
+    block.to_vec()
 }
 
 pub fn encrypt_single_block(contents: &[u8], key: &[u8]) -> Vec<u8> {
-    crypt_single_internal(contents, key, Mode::Encrypt)
-}
+    let key = GenericArray::from_slice(key);
+    let cipher = Aes128::new(&key);
 
-fn crypt_single_internal(contents: &[u8], key: &[u8], mode: Mode) -> Vec<u8> {
-    let cipher = symm::Cipher::aes_128_ecb();
-    let iv = None;
+    let mut block = GenericArray::clone_from_slice(contents);
+    cipher.encrypt_block(&mut block);
 
-    let mut c = Crypter::new(cipher, mode, key, iv).expect("oops");
-    c.pad(false);
-    let mut out = vec![0; contents.len() + cipher.block_size()];
-    let count = c.update(contents, &mut out).expect("oops");
-    let rest = c.finalize(&mut out[count..]).expect("oops");
-    out.truncate(count + rest);
-    out
+    block.to_vec()
 }
 
 #[cfg(test)]
