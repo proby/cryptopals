@@ -1,17 +1,13 @@
-use super::super::utils::hex;
-use std::collections::HashSet;
+use super::super::utils::{encryption_oracle, hex};
 
 pub fn detect_aes_in_ecb_mode(hex_strings: Vec<String>) -> String {
     let mut detected = String::from("none found");
 
     for hex_string in hex_strings {
         let decoded = hex::decode(&hex_string);
-        let chunked: Vec<&[u8]> = decoded.chunks(16).collect();
-        let mut seen_chunks = HashSet::new();
-        for chunk in chunked {
-            seen_chunks.insert(chunk);
-        }
-        if seen_chunks.len() < 10 {
+
+        let result = encryption_oracle::detect_mode(&decoded);
+        if &result == "ECB" {
             detected = hex_string;
             break;
         }

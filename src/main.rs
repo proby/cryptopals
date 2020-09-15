@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 #[macro_use]
 extern crate lazy_static;
 
@@ -69,6 +71,9 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
             let str = String::from_utf8(res).unwrap();
             results_to_print = str[0..=32].to_string();
         }
+        11 => {
+            results_to_print = set2::run_challenge_11();
+        }
         _ => panic!("challenge number {} is not implemented", challenge_num),
     }
 
@@ -88,7 +93,7 @@ fn main() {
     let mut total_duration = Duration::new(0, 0);
 
     let show_timings = true;
-    for challenge_num in 1..=10 {
+    for challenge_num in 1..=11 {
         run_challenge(challenge_num, show_timings, &mut total_duration);
     }
 
