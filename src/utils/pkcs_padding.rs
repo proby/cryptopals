@@ -29,7 +29,7 @@ mod tests {
                 b"blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666",
                 20
             ),
-            "blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666\x04\x04\x04\x04".as_bytes()
+            b"blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666\x04\x04\x04\x04"
         );
     }
 
@@ -45,12 +45,9 @@ mod tests {
         );
         assert_eq!(
             pad(b"Green submarine&YELLOW SUBMARINE", 8),
-            "Green submarine&YELLOW SUBMARINE\x08\x08\x08\x08\x08\x08\x08\x08".as_bytes()
+            b"Green submarine&YELLOW SUBMARINE\x08\x08\x08\x08\x08\x08\x08\x08"
         );
-        assert_eq!(
-            pad(b"Green submarine&YELLOW SUBMARINE", 16),
-            "Green submarine&YELLOW SUBMARINE\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10".as_bytes()
-        );
+        assert_eq!(pad(b"Green submarine&YELLOW SUBMARINE", 16), b"Green submarine&YELLOW SUBMARINE\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10");
     }
 
     #[test]
@@ -63,13 +60,12 @@ mod tests {
         strip_padding(&mut bytes);
         assert_eq!(bytes, b"YELLOW SUBMARINE!!!");
 
-        let mut bytes = "blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666\x04\x04\x04\x04"
-            .as_bytes()
-            .to_vec();
+        let mut bytes =
+            b"blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666\x04\x04\x04\x04".to_vec();
         strip_padding(&mut bytes);
         assert_eq!(
             bytes,
-            "blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666".as_bytes()
+            b"blueBOATSandGreen submarine&YELLOW SUBMARINESANDBLACK666"
         );
     }
 
@@ -85,13 +81,12 @@ mod tests {
         strip_padding(&mut bytes);
         assert_eq!(bytes, b"YELLOW SUBMARINE");
 
-        let mut bytes = "Green submarine&YELLOW SUBMARINE\x08\x08\x08\x08\x08\x08\x08\x08"
-            .as_bytes()
-            .to_vec();
+        let mut bytes =
+            b"Green submarine&YELLOW SUBMARINE\x08\x08\x08\x08\x08\x08\x08\x08".to_vec();
         strip_padding(&mut bytes);
         assert_eq!(bytes, b"Green submarine&YELLOW SUBMARINE");
 
-        let mut bytes = "Green submarine&YELLOW SUBMARINE\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10".as_bytes().to_vec();
+        let mut bytes = b"Green submarine&YELLOW SUBMARINE\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10".to_vec();
         strip_padding(&mut bytes);
         assert_eq!(bytes, b"Green submarine&YELLOW SUBMARINE");
     }
