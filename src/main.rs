@@ -74,6 +74,11 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
         11 => {
             results_to_print = set2::run_challenge_11();
         }
+        12 => {
+            let res = set2::run_challenge_12();
+            let str = String::from_utf8(res).expect("oops");
+            results_to_print = format!("{:?}", str);
+        }
         _ => panic!("challenge number {} is not implemented", challenge_num),
     }
 
@@ -93,7 +98,7 @@ fn main() {
     let mut total_duration = Duration::new(0, 0);
 
     let show_timings = true;
-    for challenge_num in 1..=11 {
+    for challenge_num in 1..=12 {
         run_challenge(challenge_num, show_timings, &mut total_duration);
     }
 

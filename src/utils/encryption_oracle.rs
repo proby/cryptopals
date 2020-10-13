@@ -24,7 +24,7 @@ pub fn generate_cipher(my_input: &[u8]) -> (Vec<u8>, String) {
     let ciphertext;
     let actual_mode;
     if random() {
-        ciphertext = aes_cbc::encrypt(&contents, &random_key);
+        ciphertext = aes_cbc::encrypt_with_zero_iv(&contents, &random_key);
         actual_mode = String::from("CBC");
     } else {
         ciphertext = aes_ecb::encrypt(&contents, &random_key);

@@ -9,6 +9,6 @@ edition = "2018"
 [dependencies]
 base64 = "0.13"
 aes = "0.5"
-regex = "1.3"
+regex = "1.4"
 lazy_static = "1.4"
 rand = "0.7"
