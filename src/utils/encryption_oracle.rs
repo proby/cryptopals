@@ -1,21 +1,29 @@
 use super::{aes_cbc, aes_ecb};
 use rand::{random, rngs::ThreadRng, thread_rng, Rng, RngCore};
-use std::collections::HashSet;
 
-pub fn detect_mode(ciphertext: &[u8]) -> String {
-    let chunk_size = ciphertext.len() / 16;
-    let mut seen_chunks = HashSet::new();
-    for chunk in ciphertext.chunks(16) {
-        seen_chunks.insert(chunk);
+pub struct ECBOracle {
+    magic_contents: Vec<u8>,
+    magic_key: Vec<u8>,
+}
+
+const MAGIC_BASE64_VALUE: &str = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK";
+impl ECBOracle {
+    pub fn new() -> Self {
+        ECBOracle {
+            magic_contents: base64::decode(MAGIC_BASE64_VALUE).unwrap(),
+            magic_key: random_bytes(16, thread_rng()),
+        }
     }
-    if seen_chunks.len() == chunk_size {
-        String::from("CBC")
-    } else {
-        String::from("ECB")
+
+    pub fn encrypt(&self, prefix_bytes: &[u8]) -> Vec<u8> {
+        let mut plaintext = prefix_bytes.to_owned();
+        plaintext.append(&mut self.magic_contents.to_owned());
+
+        aes_ecb::encrypt(&plaintext, &self.magic_key)
     }
 }
 
-pub fn generate_cipher(my_input: &[u8]) -> (Vec<u8>, String) {
+pub fn encrypt_with_random_aes_mode(my_input: &[u8]) -> (Vec<u8>, String) {
     let rng = thread_rng();
 
     let random_key = random_bytes(16, rng);

@@ -1,4 +1,4 @@
-use super::super::utils::{encryption_oracle, hex};
+use super::super::utils::{hex, oracle_tools};
 
 pub fn detect_aes_in_ecb_mode(hex_strings: Vec<String>) -> String {
     let mut detected = String::from("none found");
@@ -6,7 +6,7 @@ pub fn detect_aes_in_ecb_mode(hex_strings: Vec<String>) -> String {
     for hex_string in hex_strings {
         let decoded = hex::decode(&hex_string);
 
-        let result = encryption_oracle::detect_mode(&decoded);
+        let result = oracle_tools::detect_mode(&decoded);
         if &result == "ECB" {
             detected = hex_string;
             break;

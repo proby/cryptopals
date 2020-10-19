@@ -5,6 +5,7 @@ pub mod encryption_oracle;
 pub mod file_helpers;
 pub mod hamming;
 pub mod hex;
+pub mod oracle_tools;
 pub mod pkcs_padding;
 pub mod scorer;
 pub mod single_byte_xor;
