@@ -1,6 +1,6 @@
 use super::utils::{
-    aes_cbc, encryption_oracle, encryption_oracle::ECBOracle, file_helpers, oracle_tools,
-    pkcs_padding,
+    aes_cbc, encryption_oracle::AESModeOracle, encryption_oracle::ECBOracle, file_helpers,
+    oracle_tools, pkcs_padding,
 };
 
 pub fn run_challenge_9() -> Vec<u8> {
@@ -15,9 +15,11 @@ pub fn run_challenge_10() -> Vec<u8> {
 }
 
 pub fn run_challenge_11() -> String {
+    let mut oracle = AESModeOracle::new();
+
     for _iteration in 1..=20 {
         let input: Vec<u8> = vec![b'A'; 500];
-        let (ciphertext, actual_mode) = encryption_oracle::encrypt_with_random_aes_mode(&input);
+        let (ciphertext, actual_mode) = oracle.encrypt_with_random_aes_mode(&input);
         let guessed_mode = oracle_tools::detect_mode(&ciphertext);
 
         if actual_mode != guessed_mode {
@@ -29,20 +31,6 @@ pub fn run_challenge_11() -> String {
     }
 
     String::from("ALL OK")
-}
-
-fn find_block_size(oracle: &ECBOracle) -> usize {
-    let mut my_text = vec![b'A'];
-    let ciphertext = oracle.encrypt(&my_text);
-    let ciphertext_len = ciphertext.len();
-
-    loop {
-        my_text.push(b'A');
-        let ciphertext = oracle.encrypt(&my_text);
-        if ciphertext.len() > ciphertext_len {
-            return ciphertext.len() - ciphertext_len;
-        }
-    }
 }
 
 pub fn run_challenge_12() -> Vec<u8> {
@@ -67,6 +55,20 @@ pub fn run_challenge_12() -> Vec<u8> {
     }
 
     total_result
+}
+
+fn find_block_size(oracle: &ECBOracle) -> usize {
+    let mut my_text = vec![b'A'];
+    let ciphertext = oracle.encrypt(&my_text);
+    let ciphertext_len = ciphertext.len();
+
+    loop {
+        my_text.push(b'A');
+        let ciphertext = oracle.encrypt(&my_text);
+        if ciphertext.len() > ciphertext_len {
+            return ciphertext.len() - ciphertext_len;
+        }
+    }
 }
 
 fn determine_block(
