@@ -1,4 +1,4 @@
-use super::super::utils::aes_ecb;
+use crate::utils::aes_ecb;
 
 pub fn aec_ecb_decrypt(contents: &[u8], key: &[u8]) -> String {
     let decrypted = aes_ecb::decrypt(contents, key);
@@ -8,8 +8,8 @@ pub fn aec_ecb_decrypt(contents: &[u8], key: &[u8]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::utils::file_helpers;
     use super::*;
+    use crate::utils::file_helpers;
 
     #[test]
     fn the_example() {

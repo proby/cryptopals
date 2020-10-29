@@ -51,8 +51,8 @@ pub fn encrypt(contents: &[u8], key: &[u8], iv: Vec<u8>) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::utils::file_helpers;
     use super::*;
+    use crate::utils::file_helpers;
 
     #[test]
     fn the_example() {

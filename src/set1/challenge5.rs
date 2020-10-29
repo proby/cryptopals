@@ -1,4 +1,4 @@
-use super::super::utils::{hex, xor_util};
+use crate::utils::{hex, xor_util};
 
 pub fn repeating_key_xor(input_str: &[u8], key: &[u8]) -> String {
     let xored_bytes = xor_util::xor_byte_vecs(&input_str, &key);

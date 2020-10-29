@@ -1,4 +1,4 @@
-use super::super::utils::{hamming, scorer, single_byte_xor, xor_util};
+use crate::utils::{hamming, scorer, single_byte_xor, xor_util};
 
 pub fn break_repeating_key_xor(contents: &[u8]) -> (String, String) {
     let key_sizes_to_test = find_key_sizes_to_test(&contents);
@@ -100,8 +100,8 @@ fn find_best_score(contents: &[u8], possible_keys: &[String]) -> (String, String
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::utils::file_helpers;
     use super::*;
+    use crate::utils::file_helpers;
 
     #[test]
     fn the_example() {

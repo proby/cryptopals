@@ -1,7 +1,5 @@
-use aes::block_cipher::{generic_array::GenericArray, BlockCipher, NewBlockCipher};
-use aes::Aes128;
-
 use super::pkcs_padding;
+use aes::{block_cipher::generic_array::GenericArray, Aes128, BlockCipher, NewBlockCipher};
 
 pub fn decrypt(contents: &[u8], key: &[u8]) -> Vec<u8> {
     let mut output_bytes = Vec::with_capacity(contents.len());
@@ -50,8 +48,8 @@ pub fn encrypt_single_block(contents: &[u8], key: &[u8]) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::utils::file_helpers;
     use super::*;
+    use crate::utils::file_helpers;
 
     #[test]
     fn the_example() {

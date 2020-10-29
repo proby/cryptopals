@@ -1,4 +1,4 @@
-use super::super::utils::{hex, oracle_tools};
+use crate::utils::{hex, oracle_tools};
 
 pub fn detect_aes_in_ecb_mode(hex_strings: Vec<String>) -> String {
     let mut detected = String::from("none found");
@@ -17,8 +17,8 @@ pub fn detect_aes_in_ecb_mode(hex_strings: Vec<String>) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::utils::file_helpers;
     use super::*;
+    use crate::utils::file_helpers;
 
     #[test]
     fn the_example() {

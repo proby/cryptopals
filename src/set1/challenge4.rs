@@ -1,4 +1,4 @@
-use super::super::utils::{single_byte_xor, xor_score};
+use crate::utils::{single_byte_xor, xor_score};
 
 pub fn detect_single_character_xor(hex_strings: Vec<String>) -> xor_score::XorScore {
     let mut best = xor_score::XorScore::default();
@@ -15,8 +15,8 @@ pub fn detect_single_character_xor(hex_strings: Vec<String>) -> xor_score::XorSc
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::utils::file_helpers;
     use super::*;
+    use crate::utils::file_helpers;
 
     #[test]
     fn the_example() {

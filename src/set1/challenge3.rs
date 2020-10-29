@@ -1,4 +1,4 @@
-use super::super::utils::{single_byte_xor, xor_score};
+use crate::utils::{single_byte_xor, xor_score};
 
 pub fn single_byte_xor_decrypt(hex_str: &str) -> xor_score::XorScore {
     single_byte_xor::decrypt_from_str(hex_str)
