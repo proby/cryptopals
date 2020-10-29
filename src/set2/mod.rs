@@ -1,6 +1,8 @@
-use super::utils::{
-    aes_cbc, encryption_oracle::AESModeOracle, encryption_oracle::ECBOracle, file_helpers,
-    oracle_tools, pkcs_padding,
+use crate::utils::{
+    aes_cbc,
+    ecb_oracle_breaker::ECBOracleBreaker,
+    encryption_oracle::{AESModeOracle, ECBOracle},
+    file_helpers, oracle_tools, pkcs_padding,
 };
 
 pub fn run_challenge_9() -> Vec<u8> {
@@ -36,102 +38,7 @@ pub fn run_challenge_11() -> String {
 pub fn run_challenge_12() -> Vec<u8> {
     let oracle = ECBOracle::new();
 
-    // Discover the block size of the cipher.
-    let block_size = find_block_size(&oracle);
-
-    // Detect that the function is using ECB.
-    let ciphertext = oracle.encrypt(b"asdfasdfasdfasdfasdfasdfasdfasdfasdf");
-    assert_eq!(oracle_tools::detect_mode(&ciphertext), "ECB");
-
-    // Determine total blocks needed
-    let ciphertext = oracle.encrypt(b"");
-    let blocks_needed = ciphertext.len() / block_size;
-
-    let mut total_result = Vec::with_capacity(ciphertext.len());
-
-    for block_number in 1..=blocks_needed {
-        let mut block_result = determine_block(&oracle, block_size, block_number, &total_result);
-        total_result.append(&mut block_result);
-    }
-
-    total_result
-}
-
-fn find_block_size(oracle: &ECBOracle) -> usize {
-    let mut my_text = vec![b'A'];
-    let ciphertext = oracle.encrypt(&my_text);
-    let ciphertext_len = ciphertext.len();
-
-    loop {
-        my_text.push(b'A');
-        let ciphertext = oracle.encrypt(&my_text);
-        if ciphertext.len() > ciphertext_len {
-            return ciphertext.len() - ciphertext_len;
-        }
-    }
-}
-
-fn determine_block(
-    oracle: &ECBOracle,
-    block_size: usize,
-    block_number: usize,
-    previous_block_results: &[u8],
-) -> Vec<u8> {
-    let mut results: Vec<u8> = Vec::with_capacity(block_size);
-    let mut prefix_bytes;
-    let block_offset = block_size * block_number;
-
-    for bytes_to_short in 1..=block_size {
-        prefix_bytes = vec![0; block_size - bytes_to_short];
-
-        let oracle_response = oracle.encrypt(&prefix_bytes);
-        let oracle_response_target = oracle_response.get(0..block_offset).expect("oops");
-
-        // TODO try using #remove instead of having to append all of the time
-        prefix_bytes.append(&mut previous_block_results.to_owned());
-        prefix_bytes.append(&mut results.to_owned());
-        prefix_bytes.push(0);
-
-        let result = determine_last_byte(
-            &oracle,
-            block_offset,
-            prefix_bytes.to_owned(),
-            oracle_response_target,
-        )
-        .expect("Failed to determine last byte");
-
-        // TODO improve this check
-        if result == 1 {
-            break;
-        }
-        results.push(result);
-    }
-
-    results
-}
-
-// cheater const to make this go faster
-const BYTES_TO_TRY: &[u8; 37] = &[
-    32, 111, 105, 110, 121, 116, 115, 97, 108, 10, 104, 114, 100, 109, 103, 119, 98, 101, 117, 112,
-    118, 106, 82, 39, 53, 46, 48, 87, 45, 99, 84, 68, 63, 78, 44, 73, 1,
-];
-fn determine_last_byte(
-    oracle: &ECBOracle,
-    block_offset: usize,
-    mut prefix_bytes: Vec<u8>,
-    target: &[u8],
-) -> Option<u8> {
-    for last_byte in BYTES_TO_TRY {
-        // used to be "for last_byte in 0..127"
-        prefix_bytes[block_offset - 1] = *last_byte;
-        let oracle_response = oracle.encrypt(&prefix_bytes);
-        let blocks = oracle_response.get(0..block_offset).expect("oops");
-        if blocks == target {
-            return Some(*last_byte);
-        }
-    }
-
-    None
+    ECBOracleBreaker::break_it(oracle)
 }
 
 #[cfg(test)]
