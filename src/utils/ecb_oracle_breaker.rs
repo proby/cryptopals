@@ -1,15 +1,15 @@
-use super::{encryption_oracle::ECBOracle, oracle_tools};
+use super::{encryption_oracle::EcbOracle, oracle_tools};
 
-pub struct ECBOracleBreaker {
-    oracle: ECBOracle,
+pub struct EcbOracleBreaker {
+    oracle: EcbOracle,
     oracle_results: Vec<Vec<u8>>,
     block_size: usize,
     total_blocks_needed: usize,
 }
 
-impl ECBOracleBreaker {
-    pub fn break_it(oracle: ECBOracle) -> Vec<u8> {
-        let mut ecb_oracle_breaker = ECBOracleBreaker {
+impl EcbOracleBreaker {
+    pub fn break_it(oracle: EcbOracle) -> Vec<u8> {
+        let mut ecb_oracle_breaker = EcbOracleBreaker {
             oracle,
             oracle_results: vec![],
             block_size: 0,
@@ -93,7 +93,7 @@ impl ECBOracleBreaker {
         mut prefix_bytes: Vec<u8>,
         target: &[u8],
     ) -> Option<u8> {
-        for last_byte in ECBOracleBreaker::BYTES_TO_TRY {
+        for last_byte in EcbOracleBreaker::BYTES_TO_TRY {
             // used to be "for last_byte in 0..127"
             prefix_bytes[block_offset - 1] = *last_byte;
             let oracle_response = self.oracle.encrypt(&prefix_bytes);

@@ -1,7 +1,7 @@
 use crate::utils::{
     aes_cbc,
-    ecb_oracle_breaker::ECBOracleBreaker,
-    encryption_oracle::{AESModeOracle, ECBOracle},
+    ecb_oracle_breaker::EcbOracleBreaker,
+    encryption_oracle::{AesModeOracle, EcbOracle},
     file_helpers, oracle_tools, pkcs_padding,
 };
 
@@ -17,7 +17,7 @@ pub fn run_challenge_10() -> Vec<u8> {
 }
 
 pub fn run_challenge_11() -> String {
-    let mut oracle = AESModeOracle::new();
+    let mut oracle = AesModeOracle::new();
 
     for _iteration in 1..=20 {
         let input: Vec<u8> = vec![b'A'; 500];
@@ -36,9 +36,9 @@ pub fn run_challenge_11() -> String {
 }
 
 pub fn run_challenge_12() -> Vec<u8> {
-    let oracle = ECBOracle::new();
+    let oracle = EcbOracle::new();
 
-    ECBOracleBreaker::break_it(oracle)
+    EcbOracleBreaker::break_it(oracle)
 }
 
 #[cfg(test)]

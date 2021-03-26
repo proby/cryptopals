@@ -35,7 +35,7 @@ fn raw_byte_to_char_byte(raw_byte: u8) -> u8 {
         b'0'..=b'9' => raw_byte - b'0',
         b'a'..=b'f' => raw_byte - b'a' + 10,
         b'A'..=b'F' => raw_byte - b'A' + 10,
-        _ => panic!(format!("{} is not a valid hex char", raw_byte)),
+        _ => panic!("{} is not a valid hex char", raw_byte),
     }
 }
 
@@ -43,7 +43,7 @@ fn byte_to_char_byte(byte: u8) -> u8 {
     match byte {
         0..=9 => b'0' + byte,
         10..=15 => b'a' + (byte - 10),
-        _ => panic!(format!("{} is not a valid char", byte)),
+        _ => panic!("{} is not a valid char", byte),
     }
 }
 

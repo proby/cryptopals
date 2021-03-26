@@ -1,15 +1,15 @@
 use super::{aes_cbc, aes_ecb};
 use rand::{random, rngs::ThreadRng, thread_rng, Rng, RngCore};
 
-pub struct ECBOracle {
+pub struct EcbOracle {
     secret_contents: Vec<u8>,
     key: Vec<u8>,
 }
 
-impl ECBOracle {
+impl EcbOracle {
     pub fn new() -> Self {
-        ECBOracle {
-            secret_contents: base64::decode(ECBOracle::SECRET_CONTENTS_BASE64).unwrap(),
+        EcbOracle {
+            secret_contents: base64::decode(EcbOracle::SECRET_CONTENTS_BASE64).unwrap(),
             key: random_bytes(16, thread_rng()),
         }
     }
@@ -24,13 +24,13 @@ impl ECBOracle {
     const SECRET_CONTENTS_BASE64: &'static str = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK";
 }
 
-pub struct AESModeOracle {
+pub struct AesModeOracle {
     rng: ThreadRng,
 }
 
-impl AESModeOracle {
+impl AesModeOracle {
     pub fn new() -> Self {
-        AESModeOracle { rng: thread_rng() }
+        AesModeOracle { rng: thread_rng() }
     }
 
     pub fn encrypt_with_random_aes_mode(&mut self, my_input: &[u8]) -> (Vec<u8>, String) {
