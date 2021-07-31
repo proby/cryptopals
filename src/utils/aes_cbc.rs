@@ -11,7 +11,7 @@ pub fn decrypt(contents: &[u8], key: &[u8], iv: Vec<u8>) -> Vec<u8> {
     let mut previous_input = iv;
 
     for chunk in contents.chunks(16) {
-        let decrypted_block = aes_ecb::decrypt_single_block(&chunk, key);
+        let decrypted_block = aes_ecb::decrypt_single_block(chunk, key);
         let mut xored = xor_util::xor_byte_vecs(&previous_input, &decrypted_block);
         previous_input = chunk.to_owned();
         output_bytes.append(&mut xored);

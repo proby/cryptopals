@@ -5,7 +5,7 @@ pub fn decrypt(contents: &[u8], key: &[u8]) -> Vec<u8> {
     let mut output_bytes = Vec::with_capacity(contents.len());
 
     for chunk in contents.chunks(16) {
-        let mut decrypted_block = decrypt_single_block(&chunk, key);
+        let mut decrypted_block = decrypt_single_block(chunk, key);
         output_bytes.append(&mut decrypted_block);
     }
 
@@ -28,7 +28,7 @@ pub fn encrypt(contents: &[u8], key: &[u8]) -> Vec<u8> {
 
 pub fn decrypt_single_block(contents: &[u8], key: &[u8]) -> Vec<u8> {
     let key = GenericArray::from_slice(key);
-    let cipher = Aes128::new(&key);
+    let cipher = Aes128::new(key);
 
     let mut block = GenericArray::clone_from_slice(contents);
     cipher.decrypt_block(&mut block);
@@ -38,7 +38,7 @@ pub fn decrypt_single_block(contents: &[u8], key: &[u8]) -> Vec<u8> {
 
 pub fn encrypt_single_block(contents: &[u8], key: &[u8]) -> Vec<u8> {
     let key = GenericArray::from_slice(key);
-    let cipher = Aes128::new(&key);
+    let cipher = Aes128::new(key);
 
     let mut block = GenericArray::clone_from_slice(contents);
     cipher.encrypt_block(&mut block);

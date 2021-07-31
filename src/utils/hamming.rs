@@ -1,7 +1,7 @@
 use super::xor_util;
 
 pub fn calc_distance(bytes_a: &[u8], bytes_b: &[u8]) -> u32 {
-    let xored_bytes = xor_util::xor_byte_vecs(&bytes_a, &bytes_b);
+    let xored_bytes = xor_util::xor_byte_vecs(bytes_a, bytes_b);
 
     xored_bytes.iter().fold(0, |mut sum, byte| {
         sum += ones_count(*byte);

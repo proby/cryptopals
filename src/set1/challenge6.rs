@@ -1,10 +1,10 @@
 use crate::utils::{hamming, scorer, single_byte_xor, xor_util};
 
 pub fn break_repeating_key_xor(contents: &[u8]) -> (String, String) {
-    let key_sizes_to_test = find_key_sizes_to_test(&contents);
-    let possible_keys: Vec<String> = find_possible_keys(&contents, &key_sizes_to_test);
+    let key_sizes_to_test = find_key_sizes_to_test(contents);
+    let possible_keys: Vec<String> = find_possible_keys(contents, &key_sizes_to_test);
 
-    find_best_score(&contents, &possible_keys)
+    find_best_score(contents, &possible_keys)
 }
 
 fn calc_sum_of_distances(contents: &[u8], key_size: usize, num_of_blocks_to_assess: usize) -> f32 {
@@ -32,7 +32,7 @@ fn calc_mean_distance(contents: &[u8], key_size: usize) -> f32 {
     let num_of_blocks_to_assess = 4;
     let distances_count = num_of_blocks_to_assess - 1;
 
-    calc_sum_of_distances(&contents, key_size, num_of_blocks_to_assess)
+    calc_sum_of_distances(contents, key_size, num_of_blocks_to_assess)
         / ((distances_count * key_size) as f32)
 }
 
@@ -42,7 +42,7 @@ fn find_key_sizes_to_test(contents: &[u8]) -> Vec<usize> {
     let num_of_keys_to_test = 3;
 
     let mut key_sizes: Vec<(usize, f32)> = (key_range_start..=key_range_end)
-        .map(|key_size| (key_size, calc_mean_distance(&contents, key_size)))
+        .map(|key_size| (key_size, calc_mean_distance(contents, key_size)))
         .collect();
 
     key_sizes.sort_unstable_by(|(_a_key, a_score), (_b_key, b_score)| {
@@ -84,7 +84,7 @@ fn find_best_score(contents: &[u8], possible_keys: &[String]) -> (String, String
 
     for possible_key in possible_keys {
         let possible_key_bytes = possible_key.as_bytes();
-        let xored = xor_util::xor_byte_vecs(&possible_key_bytes, &contents);
+        let xored = xor_util::xor_byte_vecs(possible_key_bytes, contents);
         let score = scorer::score_for(&xored);
 
         if score > best_score {
