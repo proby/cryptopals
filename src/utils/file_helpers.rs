@@ -12,7 +12,7 @@ pub fn filename_to_str_vec(filename: &str) -> Vec<String> {
 pub fn filename_to_bytes_vec(filename: &str) -> Vec<u8> {
     let contents = read_in_filename(filename);
 
-    base64::decode(contents.replace("\n", "")).expect("Can't base64 decode")
+    base64::decode(contents.replace('\n', "")).expect("Can't base64 decode")
 }
 
 fn read_in_filename(filename: &str) -> String {
