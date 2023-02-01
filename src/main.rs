@@ -46,8 +46,7 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
             let contents = file_helpers::filename_to_bytes_vec("src/set1/data/6.txt");
             let (key, message) = set1::challenge6::break_repeating_key_xor(&contents);
             results_to_print = format!(
-                "CHALLENGE 6: key: \"{}\", decrypted len: {}",
-                key,
+                "CHALLENGE 6: key: \"{key}\", decrypted len: {}",
                 message.len()
             );
         }
@@ -64,7 +63,7 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
         9 => {
             let res = set2::run_challenge_9();
             let str = String::from_utf8(res).unwrap();
-            results_to_print = format!("{:?}", str);
+            results_to_print = format!("{str:?}");
         }
         10 => {
             let res = set2::run_challenge_10();
@@ -77,7 +76,7 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
         12 => {
             let res = set2::run_challenge_12();
             let str = String::from_utf8(res).expect("oops");
-            results_to_print = format!("{:?}", str);
+            results_to_print = format!("{str:?}");
         }
         _ => panic!("challenge number {} is not implemented", challenge_num),
     }
@@ -85,12 +84,9 @@ fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &
     if with_timing_info {
         let after = instant.elapsed();
         *total_duration += after;
-        println!(
-            "CHALLEGE {} ({:?}): {}",
-            challenge_num, after, results_to_print
-        );
+        println!("CHALLEGE {challenge_num} ({after:?}): {results_to_print}",);
     } else {
-        println!("CHALLEGE {}: {}", challenge_num, results_to_print);
+        println!("CHALLEGE {challenge_num}: {results_to_print}");
     }
 }
 
@@ -102,5 +98,5 @@ fn main() {
         run_challenge(challenge_num, show_timings, &mut total_duration);
     }
 
-    println!("\ntotal duration: {:?}", total_duration);
+    println!("\ntotal duration: {total_duration:?}");
 }

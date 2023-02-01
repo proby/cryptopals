@@ -25,10 +25,7 @@ pub fn run_challenge_11() -> String {
         let guessed_mode = oracle_tools::detect_mode(&ciphertext);
 
         if actual_mode != guessed_mode {
-            return format!(
-                "NOT OK! guessed: {} vs actual: {}",
-                guessed_mode, actual_mode
-            );
+            return format!("NOT OK! guessed: {guessed_mode} vs actual: {actual_mode}");
         }
     }
 
