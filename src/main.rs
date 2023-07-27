@@ -13,73 +13,64 @@ use utils::file_helpers;
 
 fn run_challenge(challenge_num: usize, with_timing_info: bool, total_duration: &mut Duration) {
     let instant = Instant::now();
-    let results_to_print: String;
-    match challenge_num {
-        1 => {
-            results_to_print =
-                set1::challenge1::hex_str_to_base_64_str("1c0111001f010100061a024b53535009181c");
-        }
-        2 => {
-            results_to_print = set1::challenge2::fixed_xor(
-                "1c0111001f010100061a024b53535009181c",
-                "686974207468652062756c6c277320657965",
-            );
-        }
+    let results_to_print: String = match challenge_num {
+        1 => set1::challenge1::hex_str_to_base_64_str("1c0111001f010100061a024b53535009181c"),
+        2 => set1::challenge2::fixed_xor(
+            "1c0111001f010100061a024b53535009181c",
+            "686974207468652062756c6c277320657965",
+        ),
         3 => {
             let best = set1::challenge3::single_byte_xor_decrypt(
                 "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736",
             );
-            results_to_print = best.print_info();
+            best.print_info()
         }
         4 => {
             let hex_strings: Vec<String> = file_helpers::filename_to_str_vec("src/set1/data/4.txt");
-
             let best = set1::challenge4::detect_single_character_xor(hex_strings);
-            results_to_print = best.print_info();
+            best.print_info()
         }
         5 => {
             let input =
                 b"Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
-            results_to_print = set1::challenge5::repeating_key_xor(input, b"ICE");
+            set1::challenge5::repeating_key_xor(input, b"ICE")
         }
         6 => {
             let contents = file_helpers::filename_to_bytes_vec("src/set1/data/6.txt");
             let (key, message) = set1::challenge6::break_repeating_key_xor(&contents);
-            results_to_print = format!(
+            format!(
                 "CHALLENGE 6: key: \"{key}\", decrypted len: {}",
                 message.len()
-            );
+            )
         }
         7 => {
             let contents = file_helpers::filename_to_bytes_vec("src/set1/data/7.txt");
             let key = b"YELLOW SUBMARINE";
             let message = set1::challenge7::aec_ecb_decrypt(&contents, key);
-            results_to_print = message[0..=32].to_string();
+            message[0..=32].to_string()
         }
         8 => {
             let hex_strings = file_helpers::filename_to_str_vec("src/set1/data/8.txt");
-            results_to_print = set1::challenge8::detect_aes_in_ecb_mode(hex_strings);
+            set1::challenge8::detect_aes_in_ecb_mode(hex_strings)
         }
         9 => {
             let res = set2::run_challenge_9();
             let str = String::from_utf8(res).unwrap();
-            results_to_print = format!("{str:?}");
+            format!("{str:?}")
         }
         10 => {
             let res = set2::run_challenge_10();
             let str = String::from_utf8(res).unwrap();
-            results_to_print = str[0..=32].to_string();
+            str[0..=32].to_string()
         }
-        11 => {
-            results_to_print = set2::run_challenge_11();
-        }
+        11 => set2::run_challenge_11(),
         12 => {
             let res = set2::run_challenge_12();
             let str = String::from_utf8(res).expect("oops");
-            results_to_print = format!("{str:?}");
+            format!("{str:?}")
         }
         _ => panic!("challenge number {} is not implemented", challenge_num),
-    }
+    };
 
     if with_timing_info {
         let after = instant.elapsed();
