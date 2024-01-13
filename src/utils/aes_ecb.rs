@@ -1,5 +1,6 @@
 use super::pkcs_padding;
-use aes::{cipher::generic_array::GenericArray, Aes128, BlockCipher, NewBlockCipher};
+use aes::cipher::{generic_array::GenericArray, BlockDecrypt, BlockEncrypt, KeyInit};
+use aes::Aes128;
 
 pub fn decrypt(contents: &[u8], key: &[u8]) -> Vec<u8> {
     let mut output_bytes = Vec::with_capacity(contents.len());

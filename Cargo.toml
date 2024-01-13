@@ -2,13 +2,13 @@
 name = "cryptopals"
 version = "0.1.0"
 authors = ["proby <proby@users.noreply.github.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.13"
-aes = "0.6"
+base64 = "0.21"
+aes = "0.8.0"
 regex = "1.4"
 lazy_static = "1.4"
-rand = "0.7"
+rand = "0.8"

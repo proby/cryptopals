@@ -1,4 +1,5 @@
 use super::{aes_cbc, aes_ecb};
+use base64::Engine;
 use rand::{random, rngs::ThreadRng, thread_rng, Rng, RngCore};
 
 pub struct EcbOracle {
@@ -9,8 +10,10 @@ pub struct EcbOracle {
 impl EcbOracle {
     pub fn new() -> Self {
         EcbOracle {
-            secret_contents: base64::decode(EcbOracle::SECRET_CONTENTS_BASE64).unwrap(),
-            key: random_bytes(16, thread_rng()),
+            secret_contents: base64::engine::general_purpose::STANDARD
+                .decode(EcbOracle::SECRET_CONTENTS_BASE64)
+                .unwrap(),
+            key: random_bytes(16),
         }
     }
 
@@ -34,7 +37,7 @@ impl AesModeOracle {
     }
 
     pub fn encrypt_with_random_aes_mode(&mut self, my_input: &[u8]) -> (Vec<u8>, String) {
-        let random_key = random_bytes(16, self.rng);
+        let random_key = random_bytes(16);
         let contents = self.build_contents(my_input);
 
         let ciphertext;
@@ -62,16 +65,16 @@ impl AesModeOracle {
     }
 
     fn generate_random_byte_vec(&mut self) -> Vec<u8> {
-        let extra_bytes_count = self.rng.gen_range(5, 11);
+        let extra_bytes_count = self.rng.gen_range(5..=11);
 
-        random_bytes(extra_bytes_count, self.rng)
+        random_bytes(extra_bytes_count)
     }
 }
 
-fn random_bytes(num_bytes: usize, mut rng: ThreadRng) -> Vec<u8> {
+fn random_bytes(num_bytes: usize) -> Vec<u8> {
     let mut bytes = vec![0u8; num_bytes];
 
-    rng.fill_bytes(&mut bytes);
+    thread_rng().fill_bytes(&mut bytes);
 
     bytes
 }
